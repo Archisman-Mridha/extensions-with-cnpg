@@ -5,6 +5,15 @@ metadata:
   name: test
 
 spec:
+  # Keep the following points in mind :
+  #
+  #   (1) The container image tag must start with the Postgres major version, which the CNPG
+  #       operator will detect.
+  #
+  #   (2) The container image must have the barman-cli-cloud bundled.
+  #       So, when building your custom Postgres container image, you can use
+  #       image ghcr.io/cloudnative-pg/postgresql as the base container imagee, as it is composed
+  #       of a community PostgreSQL image and the latest barman-cli-cloud package.
   imageName: docker.io/archismanmridha/custom-postgres:17.0
 
   instances: 1
@@ -16,7 +25,7 @@ spec:
     shared_preload_libraries:
       - citus
 
-    # # The following needs atleast Postgres v18.0.
+    # # The following requires Postgres >= v18.0, which has the extension_control_path GUC feature :
     #
     # # CloudNativePG supports the dynamic loading of PostgreSQL extensions into a Cluster at Pod
     # # startup using the Kubernetes ImageVolume feature and the extension_control_path GUC
@@ -42,3 +51,9 @@ spec:
     #     version: "13.0"
     #     image:
     #       reference: ghcr.io/archisman-mridha/postgres-17-citus-extension-13.0
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: backups

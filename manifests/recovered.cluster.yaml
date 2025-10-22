@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+
+metadata:
+  name: test-recovered
+
+spec:
+  imageName: docker.io/archismanmridha/custom-postgres:17.0
+
+  instances: 1
+
+  storage:
+    size: 100Mi
+
+  postgresql:
+    shared_preload_libraries:
+      - citus
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: backups
+
+  # Recover the cluster from existing incremental physical backups.
+  bootstrap:
+    recovery:
+      source: test
+  externalClusters:
+    - name: test
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: backups
+          #
+          # In theory, we shouldn't be required to set this parameter explicitly.
+          # But, if we don't, then it looks for the backup in s3://cnpg-poc-bw7/,
+          # instead of s3://cnpg-poc-bw7/test.
+          serverName: test

@@ -1,0 +1,36 @@
+# NOTE : While it is technically possible to reuse the same ObjectStore for multiple Cluster
+#        resources within the same namespace, it is strongly recommended to dedicate one object
+#        store per PostgreSQL cluster to ensure data isolation and operational clarity.
+
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+
+metadata:
+  name: backups
+
+spec:
+  configuration:
+    # Backups for a cluster will be saved in s3://cnpg-poc-bw7/{cluster-name}.
+    destinationPath: s3://cnpg-poc-bw7/
+
+    wal:
+      compression: gzip
+      encryption: AES256
+      maxParallel: 8
+
+    s3Credentials:
+      accessKeyId:
+        name: s3-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: s3-credentials
+        key: SECRET_ACCESS_KEY
+      sessionToken:
+        name: s3-credentials
+        key: SESSION_TOKEN
+
+      # Instead of specifying the AWS access key ID and secret access key,
+      # if you want to integrate with Kube2IAM, you can do :
+      # inheritFromIAMRole: true
+
+  retentionPolicy: 30d

@@ -1,0 +1,20 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+
+metadata:
+  name: daily
+
+spec:
+  backupOwnerReference: self
+
+  cluster:
+    name: test
+
+  schedule: "0 0 0 * * *"
+
+  # Issues a backup, as soon as this resource is created.
+  immediate: true
+
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
