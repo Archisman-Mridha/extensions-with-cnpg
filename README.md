@@ -11,8 +11,7 @@ helm repo update
 
 helm upgrade --install cnpg \
   --version 0.26.0 \
-  --namespace cnpg-system \
-  --create-namespace \
+  --namespace cnpg-system --create-namespace \
   cnpg/cloudnative-pg
 ```
 
@@ -87,6 +86,25 @@ Once recovered, you can SSH into the recovered database pod, spin up Postgres CL
 following, verifying the recovery :
 ```sh
 \d+ simple_columnar
+```
+
+## Monitoring
+
+Let's install the `KubePrometheus stack` :
+```sh
+helm upgrade --install kube-prometheus-stack \
+  --namespace monitoring --create-namespace \
+  --values ./values/kube-prometheus-stack.values.yaml \
+  oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+```
+
+Enable `PodMonitor` for the CNPG Operator, and the `CNPG Grafana dashboards` :
+```sh
+helm upgrade cnpg \
+  --namespace cnpg-system \
+  --set monitoring.podMonitorEnabled=true \
+  --set monitoring.grafanaDashboard.create=true \
+  cnpg/cloudnative-pg
 ```
 
 ## REFERENCEs

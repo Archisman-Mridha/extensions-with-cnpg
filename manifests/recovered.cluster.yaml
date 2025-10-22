@@ -37,3 +37,6 @@ spec:
           # But, if we don't, then it looks for the backup in s3://cnpg-poc-bw7/,
           # instead of s3://cnpg-poc-bw7/test.
           serverName: test
+
+  monitoring:
+    enablePodMonitor: true
