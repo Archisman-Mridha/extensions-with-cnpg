@@ -57,3 +57,4 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: backups
+        serverName: revision-0

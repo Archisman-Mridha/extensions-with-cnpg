@@ -10,8 +10,8 @@ metadata:
 
 spec:
   configuration:
-    # Backups for a cluster will be saved in s3://cnpg-poc-bw7/{cluster-name}.
-    destinationPath: s3://cnpg-poc-bw7/
+    # Backups for a cluster will be saved in s3://cnpg-poc-bw7/{namespace}/{cluster-name}/{revision}.
+    destinationPath: s3://cnpg-poc-bw7/default/test
 
     wal:
       compression: gzip

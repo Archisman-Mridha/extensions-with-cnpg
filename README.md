@@ -23,7 +23,7 @@ docker push docker.io/archismanmridha/custom-postgres:17.0
 
 Deploy the Postgres database cluster :
 ```sh
-kubectl apply -f ./manifests/test.cluster.yaml
+kubectl apply -f ./manifests/cluster.yaml
 ```
 
 Ensure that the Citus extension works, by executing the following PostgreSQL queries inside the
@@ -75,8 +75,9 @@ k delete \
 
 And try to restore the just taken immediate backup into a new cluster from  :
 > Currently, it's a limitation of CNPG, that we can't do in-place cluster recovery.
-> By that, I mean, we need to create a separate cluster, with a separate name (`recovered-test`),
-> otherwise, we'll get the following error :
+> By that, I mean, we need to use a separate folder for storing backups and WAL archives of the
+> recovered cluster.
+> Otherwise, we'll get the following error :
 > **ERROR: WAL archive check failed for server recoveredCluster: Expected empty archive**
 ```
 k apply -f ./manifests/recovered.cluster.yaml

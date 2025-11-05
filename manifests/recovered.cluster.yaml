@@ -2,7 +2,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 
 metadata:
-  name: test-recovered
+  name: test
 
 spec:
   imageName: docker.io/archismanmridha/custom-postgres:17.0
@@ -21,6 +21,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: backups
+        serverName: revision-1
 
   # Recover the cluster from existing incremental physical backups.
   bootstrap:
@@ -32,11 +33,7 @@ spec:
         name: barman-cloud.cloudnative-pg.io
         parameters:
           barmanObjectName: backups
-          #
-          # In theory, we shouldn't be required to set this parameter explicitly.
-          # But, if we don't, then it looks for the backup in s3://cnpg-poc-bw7/,
-          # instead of s3://cnpg-poc-bw7/test.
-          serverName: test
+          serverName: revision-0
 
-  monitoring:
-    enablePodMonitor: true
+  # monitoring:
+  #   enablePodMonitor: true
